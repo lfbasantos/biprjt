@@ -1,0 +1,1 @@
+select * from dbo.administrativo_assinatura
