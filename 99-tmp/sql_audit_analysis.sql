@@ -1,7 +1,15 @@
 
 --
 --
-select top 10 * from [SENAC_SIG_AUDIT].[matricula].[MatriculaRA]
+select distinct logacao from [SENAC_SIG_AUDIT].[matricula].[MatriculaRA]
+-- 
+;
+
+
+
+--
+--
+select top 10 * from [SENAC_SIG_AUDIT].[matricula].[MatriculaRA] where logacao = 'Editar'
 -- 
 ;
 
@@ -23,3 +31,5 @@ select Id from [SENAC_SIG].[matricula].[MatriculaRA]
 where Id not in (select Id from  [SENAC_SIG_AUDIT].[matricula].[MatriculaRA])
 --
 ;
+
+

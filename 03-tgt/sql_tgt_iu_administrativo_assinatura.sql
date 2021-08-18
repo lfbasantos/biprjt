@@ -48,5 +48,23 @@ from
     on t1.id = t2.id 
 where 
     t2.id is not null
+	and 
+	(
+		TipoDePosicao <> t2.TipoDePosicao 
+		or
+		VinculoDoContratoDoColaboradorId <> t2.VinculoDoContratoDoColaboradorId
+		or
+		Portaria <> t2.Portaria
+		or
+		Situacao <> t2.Situacao
+		or
+		ModeloDeAssinaturaId <> t2.ModeloDeAssinaturaId
+		or
+		Aluno <> t2.Aluno
+		or
+		AssinaturaDigitalizada <> t2.AssinaturaDigitalizada
+		or
+		NomeAbreviado <> t2.NomeAbreviado
+	)
 --
 ;
