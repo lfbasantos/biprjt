@@ -192,32 +192,3 @@ where
 
 
 
-
-select 
-	count(*)
-from 
-	tgt.MatriculaRA m
-	inner join tgt.turma t 
-		on t.Id = m.TurmaMatriculadaId
-	left join [tgt].[Canal] c 
-		on c.Id = m.Canalid
-	left join tgt.recursofinanceiro rf 
-		on rf.Id = m.RecursoFinanceiroUtilizadoId
-	left join (
-		select id, nome
-		from tgt.recursofinanceiro where situacao = 1 and nacional = 1
-		union all
-		select rfin.id,
-		(select frNacional.nome from tgt.recursofinanceiro frNacional where frNacional.id = rfin.RecursoFinanceiroNacionalId) Nome
-		from tgt.recursofinanceiro rfin where rfin.situacao = 1 and rfin.nacional = 0
-		) rfin on rfin.Id = m.RecursoFinanceiroUtilizadoId
-	left join tgt.CentroDeCustoDaTurma cct 
-		on cct.RecursoFinanceiroId = m.RecursoFinanceiroUtilizadoId and t.Id = cct.TurmaId
-	left join tgt.PessoaFisica pf 
-		on pf.id = m.PessoaFisicaId
-	left join tgt.mencao men 
-		on men.id = m.mencaoID
-	left join tgt.PrecificacaoDaTurma pt 
-		on pt.TurmaId = t.id
-	left join tgt.Contrato cnt 
-		on m.ContratoId = cnt.Id

@@ -9,13 +9,14 @@ CREATE TABLE [stg].[EstadoDaMatricula](
 	[TipoMencaoDoEstado] [int] NULL,
 	[CalculaCargaHorariaExecutada] [bit] NOT NULL,
 	[Tipo] [int] NOT NULL,
-	[OperadorFinanceiro] [int] NULL
+	[OperadorFinanceiro] [int] NULL,
+	LogAcao nvarchar(10) NOT NULL
 )
 --
 ;
 
 --
---
+-- drop table 
 CREATE TABLE [tgt].[EstadoDaMatricula](
 	[Id] [int] NOT NULL,
 	[RegionalId] [smallint] NULL,
@@ -28,7 +29,11 @@ CREATE TABLE [tgt].[EstadoDaMatricula](
 	[OperadorFinanceiro] [int] NULL,
     [ctrlArquivo] varchar(255) null,
 	[ctrlDateIniIncr] datetime null,
-	[ctrlDateFimIncr] datetime null
+	[ctrlDateFimIncr] datetime null,
+	ctrlAtivo smallint,
+	ctrlInsert datetime null,
+	ctrlUpdate datetime null,
+	ctrlDelete datetime null
 )
 --
 ;

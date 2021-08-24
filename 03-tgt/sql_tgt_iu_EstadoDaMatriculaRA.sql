@@ -16,7 +16,9 @@ insert into  tgt.EstadoDaMatriculaRA
 	EstadoOriginadoDeUmaTransferenciaInterna,
 	ctrlArquivo,
 	ctrlDateIniIncr,
-	ctrlDateFimIncr
+	ctrlDateFimIncr,
+	ctrlAtivo,
+	ctrlInsert
 )
 select 
     stg.Id,
@@ -31,8 +33,10 @@ select
 	stg.GeradoManualmente,
 	stg.Justificativa,
 	stg.EstadoOriginadoDeUmaTransferenciaInterna,
-	'MAN',
-	getdate(),
+	'@{concat(pipeline().parameters.pTabela, '_', activity('lkp_ctl_incr').output.firstRow.fmtdt, '.csv')}',
+	'@{activity('lkp_ctl_incr').output.firstRow.dt_ini_incr}',
+	'@{activity('lkp_ctl_incr').output.firstRow.dt_fim_incr}',
+	1,
 	getdate()
 from 
     stg.EstadoDaMatriculaRA stg left join tgt.EstadoDaMatriculaRA tgt
@@ -57,7 +61,11 @@ update  tgt.EstadoDaMatriculaRA
 	RequerimentoId = stg.RequerimentoId,
 	GeradoManualmente = stg.GeradoManualmente,
 	Justificativa = stg.Justificativa,
-	EstadoOriginadoDeUmaTransferenciaInterna = stg.EstadoOriginadoDeUmaTransferenciaInterna
+	EstadoOriginadoDeUmaTransferenciaInterna = stg.EstadoOriginadoDeUmaTransferenciaInterna,
+	ctrlArquivo = '@{concat(pipeline().parameters.pTabela, '_', activity('lkp_ctl_incr').output.firstRow.fmtdt, '.csv')}',
+	ctrlDateIniIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_ini_incr}',
+	ctrlDateFimIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_fim_incr}',
+	ctrlUpdate = getdate()
 from 
     stg.EstadoDaMatriculaRA stg left join tgt.EstadoDaMatriculaRA tgt
     on stg.Id = tgt.Id
@@ -90,9 +98,21 @@ where
 --
 ;
 
-
 --
 --
-update [tgt].[tb_ctl_incr] set dt_ini_incr = dt_fim_incr where ds_tabela = 'EstadoDaMatriculaRA'
+update tgt.EstadoDaMatriculaRA
+    set
+	ctrlAtivo = 0,
+	ctrlArquivo = '@{concat(pipeline().parameters.pTabela, '_', activity('lkp_ctl_incr').output.firstRow.fmtdt, '.csv')}',
+	ctrlDateIniIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_ini_incr}',
+	ctrlDateFimIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_fim_incr}',
+	ctrlDelete = getdate()
+from 
+    stg.EstadoDaMatriculaRA stg left join tgt.EstadoDaMatriculaRA tgt
+    on stg.Id = tgt.Id
+where 
+    tgt.Id is not null
+	and 
+	stg.logAcao = 'Excluir'
 --
 ;

@@ -62,37 +62,5 @@ from
 	left join financeiro.Contrato cnt 
 		on m.ContratoId = cnt.Id
 
-where cnt.NumeroAmigavel ='2019.1.18' --(teste)
+where m.id = 357
 
-
-
-
-
-select 
-	count(*)
-from 
-	matricula.MatriculaRA m
-	inner join turma.turma t 
-		on t.Id = m.TurmaMatriculadaId
-	left join [matricula].[Canal] c 
-		on c.Id = m.Canalid
-	left join administrativo.recursofinanceiro rf 
-		on rf.Id = m.RecursoFinanceiroUtilizadoId
-	left join (
-		select id, nome
-		from administrativo.recursofinanceiro where situação = 1 and nacional = 1
-		union all
-		select rfin.id,
-		(select frNacional.nome from administrativo.recursofinanceiro frNacional where frNacional.id = rfin.RecursoFinanceiroNacionalId) Nome
-		from administrativo.recursofinanceiro rfin where rfin.situação = 1 and rfin.nacional = 0
-		) rfin on rfin.Id = m.RecursoFinanceiroUtilizadoId
-	left join turma.CentroDeCustoDaTurma cct 
-		on cct.RecursoFinanceiroId = m.RecursoFinanceiroUtilizadoId and t.Id = cct.TurmaId
-	left join administrativo.PessoaFisica pf 
-		on pf.id = m.PessoaFisicaId
-	left join matricula.mencao men 
-		on men.id = m.mencaoID
-	left join turma.PrecificacaoDaTurma pt 
-		on pt.TurmaId = t.id
-	left join financeiro.Contrato cnt 
-		on m.ContratoId = cnt.Id
