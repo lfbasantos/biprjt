@@ -1,5 +1,5 @@
 --
---
+-- drop table tgt.FormaDeExecucao
 CREATE TABLE stg.FormaDeExecucao(
 	Id bigint NOT NULL,
 	Nome nvarchar(50) NOT NULL,

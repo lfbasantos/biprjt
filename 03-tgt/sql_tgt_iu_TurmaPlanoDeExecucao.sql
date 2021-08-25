@@ -10,7 +10,9 @@ insert into tgt.TurmaPlanoDeExecucao
 	Selecionado,
     ctrlArquivo,
 	ctrlDateIniIncr,
-	ctrlDateFimIncr
+	ctrlDateFimIncr,
+	ctrlAtivo,
+	ctrlInsert
 )
 select 
     stg.Id,
@@ -19,8 +21,10 @@ select
 	stg.Ordem,
 	stg.TurmaId,
 	stg.Selecionado,
-	'MAN',
-	getdate(),
+	'@{concat(pipeline().parameters.pTabela, '_', activity('lkp_ctl_incr').output.firstRow.fmtdt, '.csv')}',
+	'@{activity('lkp_ctl_incr').output.firstRow.dt_ini_incr}',
+	'@{activity('lkp_ctl_incr').output.firstRow.dt_fim_incr}',
+	1,
 	getdate()
 from 
     stg.TurmaPlanoDeExecucao stg left join tgt.TurmaPlanoDeExecucao tgt

@@ -26,7 +26,9 @@ insert into tgt.PessoaFisica
 	HashDaFoto,
     ctrlArquivo,
 	ctrlDateIniIncr,
-	ctrlDateFimIncr
+	ctrlDateFimIncr,
+	ctrlAtivo,
+	ctrlInsert
 )
 select 
     stg.Id,
@@ -51,8 +53,10 @@ select
 	stg.SistemaLegado,
 	stg.GeneroDoNomeSocial,
 	stg.HashDaFoto,
-    'stg.ctrlArquivo',
-	getdate(),
+    '@{concat(pipeline().parameters.pTabela, '_', activity('lkp_ctl_incr').output.firstRow.fmtdt, '.csv')}',
+	'@{activity('lkp_ctl_incr').output.firstRow.dt_ini_incr}',
+	'@{activity('lkp_ctl_incr').output.firstRow.dt_fim_incr}',
+	1,
 	getdate()
 from 
     stg.PessoaFisica stg left join tgt.PessoaFisica tgt 

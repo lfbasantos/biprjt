@@ -7,15 +7,19 @@ insert into tgt.FormaDeExecucao
 	Cor,
     ctrlArquivo,
 	ctrlDateIniIncr,
-	ctrlDateFimIncr
+	ctrlDateFimIncr,
+    ctrlAtivo,
+	ctrlInsert
 )
 select 
     stg.Id,
     stg.Nome,
     stg.Cor,
-    '',
-    getdate(),
-    getdate()
+    '@{concat(pipeline().parameters.pTabela, '_', activity('lkp_ctl_incr').output.firstRow.fmtdt, '.csv')}',
+	'@{activity('lkp_ctl_incr').output.firstRow.dt_ini_incr}',
+	'@{activity('lkp_ctl_incr').output.firstRow.dt_fim_incr}',
+	1,
+	getdate()
 from 
     stg.FormaDeExecucao stg left join tgt.FormaDeExecucao tgt
     on stg.Id = tgt.Id 
@@ -31,9 +35,10 @@ update tgt.FormaDeExecucao
 set
 	Nome = stg.Nome,
 	Cor = stg.Cor,
-    ctrlArquivo ='',
-	ctrlDateIniIncr = getdate(),
-	ctrlDateFimIncr = getdate()
+    ctrlArquivo = '@{concat(pipeline().parameters.pTabela, '_', activity('lkp_ctl_incr').output.firstRow.fmtdt, '.csv')}',
+	ctrlDateIniIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_ini_incr}',
+	ctrlDateFimIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_fim_incr}',
+	ctrlUpdate = getdate()
 from 
     stg.FormaDeExecucao stg left join tgt.FormaDeExecucao tgt
     on stg.Id = tgt.Id 
@@ -44,5 +49,24 @@ where
         tgt.Nome <> stg.Nome or
         tgt.Cor <> stg.Cor
     )
+--
+;
+
+--
+--
+update tgt.FormaDeExecucao
+    set
+	ctrlAtivo = 0,
+	ctrlArquivo = '@{concat(pipeline().parameters.pTabela, '_', activity('lkp_ctl_incr').output.firstRow.fmtdt, '.csv')}',
+	ctrlDateIniIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_ini_incr}',
+	ctrlDateFimIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_fim_incr}',
+	ctrlDelete = getdate()
+from 
+    stg.FormaDeExecucao stg left join tgt.FormaDeExecucao tgt
+    on stg.Id = tgt.Id
+where 
+    tgt.Id is not null
+	and 
+	stg.logAcao = 'Excluir'
 --
 ;

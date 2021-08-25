@@ -24,7 +24,7 @@ select dt_ini_incr, dt_fim_incr, format(dt_fim_incr,'yyyyMMdd_HHmmss') as fmtdt 
 
 --
 --
-insert into [tgt].[tb_ctl_incr] (ds_tabela, dt_ini_incr, dt_fim_incr) values ('EstadoDaMatriculaRA', getdate(), getdate())
+insert into [tgt].[tb_ctl_incr] (ds_tabela, dt_ini_incr, dt_fim_incr) values ('Mencao', getdate()-7, getdate())
 --
 ;
 
@@ -113,5 +113,11 @@ select * from sigbi.analise_matriculas where matriculaid = 9013
 --
 --
 select top 1000 * from sigbi.analise_matriculas where MatriculaId = 357
+--
+;
+
+--
+--
+select top 100 * from tgt.CentroDeCustoDaTurma
 --
 ;

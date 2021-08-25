@@ -1,5 +1,5 @@
 --
---
+-- 
 CREATE TABLE stg.TurmaFormaDeExecucaoUnidadeCurricularDoPlanoDeExecucao(
 	Id bigint NOT NULL,
 	NomeFormaDeExecucao nvarchar(50) NOT NULL,

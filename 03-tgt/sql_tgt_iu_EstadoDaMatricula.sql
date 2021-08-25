@@ -1,33 +1,36 @@
 --
 -- Insert Novos 
-insert into [tgt].[EstadoDaMatricula]
+insert into tgt.EstadoDaMatricula
 (
-    [Id],
-	[RegionalId],
-	[Nome],
-	[Descricao],
-	[Aplicacao],
-	[TipoMencaoDoEstado],
-	[CalculaCargaHorariaExecutada],
-	[Tipo],
-	[OperadorFinanceiro],
-    [ctrlArquivo],
-	[ctrlDateIniIncr],
-	[ctrlDateFimIncr]
+    Id,
+	RegionalId,
+	Nome,
+	Descricao,
+	Aplicacao,
+	TipoMencaoDoEstado,
+	CalculaCargaHorariaExecutada,
+	Tipo,
+	OperadorFinanceiro,
+    ctrlArquivo,
+	ctrlDateIniIncr,
+	ctrlDateFimIncr,
+	ctrlAtivo,
+	ctrlInsert
 )
 select 
     stg.Id,
 	stg.RegionalId,
 	stg.Nome,
 	stg.Descricao,
-	stg.UsuarioId,
 	stg.Aplicacao,
     stg.TipoMencaoDoEstado,
     stg.CalculaCargaHorariaExecutada,
     stg.Tipo,
     stg.OperadorFinanceiro,
-	'INCR',
-	getdate(),
+	'@{concat(pipeline().parameters.pTabela, '_', activity('lkp_ctl_incr').output.firstRow.fmtdt, '.csv')}',
+	'@{activity('lkp_ctl_incr').output.firstRow.dt_ini_incr}',
+	'@{activity('lkp_ctl_incr').output.firstRow.dt_fim_incr}',
+	1,
 	getdate()
 from 
     stg.EstadoDaMatricula stg left join tgt.EstadoDaMatricula tgt
@@ -37,10 +40,9 @@ where
 --
 ;
 
-
 --
 -- Updates 
-update [tgt].[EstadoDaMatricula]
+update tgt.EstadoDaMatricula
 set
 	RegionalId = stg.RegionalId,
 	Nome = stg.Nome,
@@ -50,9 +52,10 @@ set
 	CalculaCargaHorariaExecutada = stg.CalculaCargaHorariaExecutada,
 	Tipo = stg.Tipo ,
 	OperadorFinanceiro = stg.OperadorFinanceiro,
-    ctrlArquivo = '',
-	ctrlDateIniIncr = getdate(),
-	ctrlDateFimIncr = getdate()
+    ctrlArquivo = '@{concat(pipeline().parameters.pTabela, '_', activity('lkp_ctl_incr').output.firstRow.fmtdt, '.csv')}',
+	ctrlDateIniIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_ini_incr}',
+	ctrlDateFimIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_fim_incr}',
+	ctrlUpdate = getdate()
 from 
     stg.EstadoDaMatricula stg left join tgt.EstadoDaMatricula tgt
     on stg.Id = tgt.Id
@@ -70,5 +73,24 @@ where
         tgt.OperadorFinanceiro <> stg.OperadorFinanceiro
 
     )
+--
+;
+
+--
+-- Delete
+update tgt.EstadoDaMatricula
+    set
+	ctrlAtivo = 0,
+	ctrlArquivo = '@{concat(pipeline().parameters.pTabela, '_', activity('lkp_ctl_incr').output.firstRow.fmtdt, '.csv')}',
+	ctrlDateIniIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_ini_incr}',
+	ctrlDateFimIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_fim_incr}',
+	ctrlDelete = getdate()
+from 
+    stg.EstadoDaMatricula stg left join tgt.EstadoDaMatricula tgt
+    on stg.Id = tgt.Id
+where 
+    tgt.Id is not null
+	and 
+	stg.logAcao = 'Excluir'
 --
 ;

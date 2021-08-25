@@ -2,7 +2,7 @@
 --
 insert into tgt.Turma
 (
-    	Id,
+    Id,
 	RegionalId,
 	CodigoDaTurma,
 	NomeUnidadeOperativa,
@@ -43,7 +43,9 @@ insert into tgt.Turma
 	PeriodoDeExecucacaoFoiInformadoManualmente,
     ctrlArquivo,
 	ctrlDateIniIncr,
-	ctrlDateFimIncr
+	ctrlDateFimIncr,
+	ctrlAtivo,
+	ctrlInsert
 )
 select 
     stg.Id,
@@ -85,8 +87,10 @@ select
 	stg.PlanoDoCursoDrDesatualizado,
 	stg.EscolaAberta,
 	stg.PeriodoDeExecucacaoFoiInformadoManualmente,
-    'ctrlArquivo',
-	getdate(),
+    '@{concat(pipeline().parameters.pTabela, '_', activity('lkp_ctl_incr').output.firstRow.fmtdt, '.csv')}',
+	'@{activity('lkp_ctl_incr').output.firstRow.dt_ini_incr}',
+	'@{activity('lkp_ctl_incr').output.firstRow.dt_fim_incr}',
+	1,
 	getdate()
 from    
     stg.turma stg left join tgt.turma tgt

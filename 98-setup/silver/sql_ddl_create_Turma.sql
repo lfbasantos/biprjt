@@ -1,5 +1,5 @@
 --
---
+-- drop table tgt.Turma 
 CREATE TABLE stg.Turma(
 	Id int NOT NULL,
 	RegionalId smallint NULL,

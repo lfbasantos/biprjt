@@ -1,0 +1,36 @@
+--
+-- Pré Setup 
+-- Database Connections
+-- Main Schemas
+-- Git Repo
+-- Azure Studio 
+-- Linked Servers Setup 
+
+--
+-- 1 DDL Setup
+
+--
+-- 2 DML Setup
+
+--
+-- 3 Dataset Setup
+-- Setup Source Audit
+-- Setup STG (SIGBI)
+-- Setup DataLake CSV
+
+--
+-- 4 Pipeline Setup 
+-- Setup Tbl Incr 
+-- Setup pTabela parameter
+-- Setup Ingest
+-- Setup Load STG 
+-- Obs.: export select da tabela para csv para gerar arquivo de exemplo
+-- Obs.: Trocar o filename pra um arquivo exemplo para validar schemas e mappings
+
+
+--
+-- Params
+-- @concat(pipeline().parameters.pTabela, '_', activity('lkp_ctl_incr').output.firstRow.fmtdt, '.csv')
+-- '@{activity('lkp_ctl_incr').output.firstRow.dt_ini_incr}',
+-- '@{activity('lkp_ctl_incr').output.firstRow.dt_fim_incr}',
+

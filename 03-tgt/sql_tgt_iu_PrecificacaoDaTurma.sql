@@ -13,7 +13,9 @@ insert into tgt.PrecificacaoDaTurma
 	OrigemDaPrecificacao,
 	ctrlArquivo,
 	ctrlDateIniIncr,
-	ctrlDateFimIncr
+	ctrlDateFimIncr,
+	ctrlAtivo,
+	ctrlInsert
 )
 select 
 	stg.Id,
@@ -25,8 +27,10 @@ select
 	stg.ValorDoGmaha,
 	stg.TipoDePrecificacao,
 	stg.OrigemDaPrecificacao,
-	'',
-	getdate(),
+	'@{concat(pipeline().parameters.pTabela, '_', activity('lkp_ctl_incr').output.firstRow.fmtdt, '.csv')}',
+	'@{activity('lkp_ctl_incr').output.firstRow.dt_ini_incr}',
+	'@{activity('lkp_ctl_incr').output.firstRow.dt_fim_incr}',
+	1,
 	getdate()
 from 
     stg.PrecificacaoDaTurma stg left join tgt.PrecificacaoDaTurma tgt 

@@ -1,6 +1,6 @@
 --
---
-CREATE TABLE stg.Contrato(
+-- drop table tgt.Contrato
+CREATE TABLE stg.Contrato (
 	Id bigint  NOT NULL,
 	RegionalId smallint NULL,
 	RecursoFinanceiroId int NOT NULL,

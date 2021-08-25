@@ -1,7 +1,7 @@
 --
---
+-- 
 CREATE TABLE stg.PessoaFisica(
-	Id bigintNOT NULL,
+	Id bigint NOT NULL,
 	RegionalId smallint NOT NULL,
 	Nome nvarchar(75) NOT NULL,
 	NomeSocial nvarchar(75) NULL,
@@ -31,7 +31,7 @@ CREATE TABLE stg.PessoaFisica(
 --
 --
 CREATE TABLE tgt.PessoaFisica(
-	Id bigintNOT NULL,
+	Id bigint NOT NULL,
 	RegionalId smallint NOT NULL,
 	Nome nvarchar(75) NOT NULL,
 	NomeSocial nvarchar(75) NULL,

@@ -1,5 +1,5 @@
 --
---
+-- drop table tgt.canal
 CREATE TABLE stg.Canal(
 	Id int NOT NULL,
 	Nome nvarchar(150) NOT NULL,

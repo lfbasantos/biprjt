@@ -1,5 +1,5 @@
 --
---
+-- 
 CREATE TABLE stg.PrecificacaoDaTurma(
 	Id bigint NOT NULL,
 	RegionalId smallint NULL,

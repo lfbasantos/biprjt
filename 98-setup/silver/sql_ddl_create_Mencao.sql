@@ -1,6 +1,6 @@
 --
---
-CREATE TABLE stg.Mencao(
+-- 
+CREATE TABLE stg.Mencao (
 	Id int NOT NULL,
 	RegionalId smallint NULL,
 	CriterioDeAprovacao nvarchar(max) NOT NULL,

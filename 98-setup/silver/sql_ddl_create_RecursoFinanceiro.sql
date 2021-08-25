@@ -1,5 +1,5 @@
 --
---
+-- 
 CREATE TABLE stg.RecursoFinanceiro(
 	Id int  NOT NULL,
 	RegionalId smallint NULL,

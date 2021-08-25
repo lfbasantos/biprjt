@@ -11,7 +11,9 @@ insert into tgt.Mencao
 	Feedback ,
     ctrlArquivo,
 	ctrlDateIniIncr,
-	ctrlDateFimIncr 
+	ctrlDateFimIncr,
+	ctrlAtivo,
+	ctrlInsert
 )
 select 
     stg.Id,
@@ -21,9 +23,11 @@ select
 	stg.TipoMencao ,
 	stg.SiglaDaMencao,
 	stg.Feedback ,
-    '',
-    getdate(),
-    getdate()
+    '@{concat(pipeline().parameters.pTabela, '_', activity('lkp_ctl_incr').output.firstRow.fmtdt, '.csv')}',
+	'@{activity('lkp_ctl_incr').output.firstRow.dt_ini_incr}',
+	'@{activity('lkp_ctl_incr').output.firstRow.dt_fim_incr}',
+	1,
+	getdate()
 from 
     stg.Mencao stg left join tgt.Mencao tgt
     on stg.Id = tgt.Id
@@ -42,13 +46,33 @@ set
 	TipoMencao=stg.TipoMencao,
 	SiglaDaMencao=stg.SiglaDaMencao,
 	Feedback=stg.Feedback,
-    ctrlArquivo='',
-	ctrlDateIniIncr=getdate(),
-	ctrlDateFimIncr=getdate()
+    ctrlArquivo = '@{concat(pipeline().parameters.pTabela, '_', activity('lkp_ctl_incr').output.firstRow.fmtdt, '.csv')}',
+	ctrlDateIniIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_ini_incr}',
+	ctrlDateFimIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_fim_incr}',
+	ctrlUpdate = getdate()
 from 
     stg.Mencao stg left join tgt.Mencao tgt
     on stg.Id = tgt.Id
 where 
     tgt.Id is not null
+--
+;
+
+--
+--
+update tgt.Mencao
+    set
+	ctrlAtivo = 0,
+	ctrlArquivo = '@{concat(pipeline().parameters.pTabela, '_', activity('lkp_ctl_incr').output.firstRow.fmtdt, '.csv')}',
+	ctrlDateIniIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_ini_incr}',
+	ctrlDateFimIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_fim_incr}',
+	ctrlDelete = getdate()
+from 
+    stg.Mencao stg left join tgt.Mencao tgt
+    on stg.Id = tgt.Id
+where 
+    tgt.Id is not null
+	and 
+	stg.logAcao = 'Excluir'
 --
 ;

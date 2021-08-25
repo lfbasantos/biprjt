@@ -26,7 +26,9 @@ insert into tgt.MatriculaRA
 	PesquisaDeSatisfacaoPJEnviada,
     ctrlArquivo,
 	ctrlDateIniIncr,
-	ctrlDateFimIncr
+	ctrlDateFimIncr,
+	ctrlAtivo,
+	ctrlInsert
 )
 select
     stg.Id,
@@ -51,8 +53,10 @@ select
 	stg.PessoaFisicaDaPraticaDeAprendizagemId,
 	stg.PercentualCargaHorariaUltimaPesquisaDeSatisfacaoEnviada,
 	stg.PesquisaDeSatisfacaoPJEnviada,
-    '',
-	getdate(),
+    '@{concat(pipeline().parameters.pTabela, '_', activity('lkp_ctl_incr').output.firstRow.fmtdt, '.csv')}',
+	'@{activity('lkp_ctl_incr').output.firstRow.dt_ini_incr}',
+	'@{activity('lkp_ctl_incr').output.firstRow.dt_fim_incr}',
+	1,
 	getdate()
 from
     stg.MatriculaRA stg left join tgt.MatriculaRA tgt 
@@ -88,9 +92,10 @@ set
 	PessoaFisicaDaPraticaDeAprendizagemId=stg.PessoaFisicaDaPraticaDeAprendizagemId,
 	PercentualCargaHorariaUltimaPesquisaDeSatisfacaoEnviada=stg.PercentualCargaHorariaUltimaPesquisaDeSatisfacaoEnviada,
 	PesquisaDeSatisfacaoPJEnviada=stg.PesquisaDeSatisfacaoPJEnviada,
-    ctrlArquivo = '',
-	ctrlDateIniIncr = getdate(),
-	ctrlDateFimIncr = getdate()
+    ctrlArquivo = '@{concat(pipeline().parameters.pTabela, '_', activity('lkp_ctl_incr').output.firstRow.fmtdt, '.csv')}',
+	ctrlDateIniIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_ini_incr}',
+	ctrlDateFimIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_fim_incr}',
+	ctrlUpdate = getdate()
 from
     stg.MatriculaRA stg left join tgt.MatriculaRA tgt 
     on stg.Id = tgt.Id 
@@ -120,5 +125,25 @@ where
         tgt.PercentualCargaHorariaUltimaPesquisaDeSatisfacaoEnviada<>stg.PercentualCargaHorariaUltimaPesquisaDeSatisfacaoEnviada or
         tgt.PesquisaDeSatisfacaoPJEnviada<>stg.PesquisaDeSatisfacaoPJEnviada
     )
+--
+;
+
+
+--
+--
+update tgt.MatriculaRA
+    set
+	ctrlAtivo = 0,
+	ctrlArquivo = '@{concat(pipeline().parameters.pTabela, '_', activity('lkp_ctl_incr').output.firstRow.fmtdt, '.csv')}',
+	ctrlDateIniIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_ini_incr}',
+	ctrlDateFimIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_fim_incr}',
+	ctrlDelete = getdate()
+from 
+    stg.MatriculaRA stg left join tgt.MatriculaRA tgt
+    on stg.Id = tgt.Id
+where 
+    tgt.Id is not null
+	and 
+	stg.logAcao = 'Excluir'
 --
 ;

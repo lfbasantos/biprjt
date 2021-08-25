@@ -1,5 +1,5 @@
 --
---
+-- 
 CREATE TABLE stg.CentroDeCustoDaTurma(
 	Id int NOT NULL,
 	TurmaId int NOT NULL,

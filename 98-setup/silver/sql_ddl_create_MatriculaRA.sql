@@ -1,6 +1,6 @@
 --
---
-CREATE TABLE stg.MatriculaRA(
+-- drop table tgt.MatriculaRA
+CREATE TABLE stg.MatriculaRA (
 	Id bigint NOT NULL,
 	TurmaMatriculadaId int NOT NULL,
 	RecursoFinanceiroUtilizadoId int NOT NULL,

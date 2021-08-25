@@ -1,5 +1,5 @@
 --
---
+-- 
 CREATE TABLE stg.TurmaPlanoDeExecucao(
 	Id bigint  NOT NULL,
 	PlanoDeExecucaoOrigemId bigint NOT NULL,
