@@ -27,7 +27,7 @@
 -- Obs.: export select da tabela para csv para gerar arquivo de exemplo
 -- Obs.: Trocar o filename pra um arquivo exemplo para validar schemas e mappings
 
-
+ 
 --
 -- Params
 -- @concat(pipeline().parameters.pTabela, '_', activity('lkp_ctl_incr').output.firstRow.fmtdt, '.csv')

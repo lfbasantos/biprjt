@@ -50,9 +50,10 @@ set
 	Situacao=stg.Situacao,
 	Nacional=stg.Nacional,
 	RecursoFinanceiroNacionalId=stg.RecursoFinanceiroNacionalId,
-    ctrlArquivo = '',
-	ctrlDateIniIncr = getdate(),
-	ctrlDateFimIncr = getdate()
+    ctrlArquivo = '@{concat(pipeline().parameters.pTabela, '_', activity('lkp_ctl_incr').output.firstRow.fmtdt, '.csv')}',
+	ctrlDateIniIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_ini_incr}',
+	ctrlDateFimIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_fim_incr}',
+	ctrlUpdate = getdate()
 from
     stg.RecursoFinanceiro stg left join tgt.RecursoFinanceiro tgt 
     on stg.Id = tgt.Id 
@@ -68,5 +69,25 @@ where
         tgt.Nacional<>stg.Nacional or
         tgt.RecursoFinanceiroNacionalId<>stg.RecursoFinanceiroNacionalId
     )
+--
+;
+
+
+--
+--
+update tgt.RecursoFinanceiro
+    set
+	ctrlAtivo = 0,
+	ctrlArquivo = '@{concat(pipeline().parameters.pTabela, '_', activity('lkp_ctl_incr').output.firstRow.fmtdt, '.csv')}',
+	ctrlDateIniIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_ini_incr}',
+	ctrlDateFimIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_fim_incr}',
+	ctrlDelete = getdate()
+from 
+    stg.RecursoFinanceiro stg left join tgt.RecursoFinanceiro tgt
+    on stg.Id = tgt.Id
+where 
+    tgt.Id is not null
+	and 
+	stg.logAcao = 'Excluir'
 --
 ;

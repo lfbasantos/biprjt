@@ -24,7 +24,7 @@ select dt_ini_incr, dt_fim_incr, format(dt_fim_incr,'yyyyMMdd_HHmmss') as fmtdt 
 
 --
 --
-insert into [tgt].[tb_ctl_incr] (ds_tabela, dt_ini_incr, dt_fim_incr) values ('Mencao', getdate()-7, getdate())
+insert into [tgt].[tb_ctl_incr] (ds_tabela, dt_ini_incr, dt_fim_incr) values ('TurmaPlanoDeExecucao', getdate()-7, getdate())
 --
 ;
 

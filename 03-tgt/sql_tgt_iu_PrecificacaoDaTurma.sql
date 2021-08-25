@@ -53,13 +53,34 @@ set
 	ValorDoGmaha=stg.ValorDoGmaha,
 	TipoDePrecificacao=stg.TipoDePrecificacao,
 	OrigemDaPrecificacao=stg.OrigemDaPrecificacao,
-	ctrlArquivo='',
-	ctrlDateIniIncr=getdate(),
-	ctrlDateFimIncr=getdate()
+	ctrlArquivo = '@{concat(pipeline().parameters.pTabela, '_', activity('lkp_ctl_incr').output.firstRow.fmtdt, '.csv')}',
+	ctrlDateIniIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_ini_incr}',
+	ctrlDateFimIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_fim_incr}',
+	ctrlUpdate = getdate()
 from 
     stg.PrecificacaoDaTurma stg left join tgt.PrecificacaoDaTurma tgt 
     on stg.Id = tgt.Id
 where 
     tgt.Id is not null 
+--
+;
+
+
+--
+--
+update tgt.PrecificacaoDaTurma
+    set
+	ctrlAtivo = 0,
+	ctrlArquivo = '@{concat(pipeline().parameters.pTabela, '_', activity('lkp_ctl_incr').output.firstRow.fmtdt, '.csv')}',
+	ctrlDateIniIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_ini_incr}',
+	ctrlDateFimIncr = '@{activity('lkp_ctl_incr').output.firstRow.dt_fim_incr}',
+	ctrlDelete = getdate()
+from 
+    stg.PrecificacaoDaTurma stg left join tgt.PrecificacaoDaTurma tgt
+    on stg.Id = tgt.Id
+where 
+    tgt.Id is not null
+	and 
+	stg.logAcao = 'Excluir'
 --
 ;
